@@ -12,11 +12,15 @@ export type FilterValuesType = "all" | "active" | "completed"
 
 function App() {
 
-    const tasks: Array<TodolistTaskType> = [
+    const [tasks, setTasks] = useState<Array<TodolistTaskType>>([
         {id: 1, title: "HTML&CSS", isDone: true},
         {id: 2, title: "JS", isDone: true},
         {id: 3, title: "ReactJS", isDone: false}
-    ];
+    ])
+
+    function removeTask(taskID: number) {
+        setTasks(tasks.filter(t => t.id !== taskID))
+    }
 
 
     //const todoListFilter: FilterValuesType = "all";
@@ -24,10 +28,9 @@ function App() {
     const [todoListFilter, setTodoListFilter] = useState<FilterValuesType>("all")
 
 
-    function changeTodoListFilter (newFilterValue: FilterValuesType){
+    function changeTodoListFilter(newFilterValue: FilterValuesType) {
         setTodoListFilter(newFilterValue)
     }
-
 
 
     function getTasksForTodoList() {
@@ -46,7 +49,8 @@ function App() {
         <div className="App">
             <Todolist title={"What to learn"}
                       tasks={getTasksForTodoList()}
-                      changeTodoListFilter = {changeTodoListFilter}
+                      changeTodoListFilter={changeTodoListFilter}
+                      removeTask={removeTask}
             />
 
         </div>
