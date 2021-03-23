@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
 import {v1} from "uuid";
+import {isBoolean} from "util";
 
 export type TodolistTaskType = {
     id: string;
@@ -35,6 +36,17 @@ function App() {
 
     }
 
+    function changeTaskStatus (taskID: string, newIsDone: boolean) {
+        const updatedTasks = tasks.map(t => {
+            if (t.id === taskID) {
+                return {...t, isDone: newIsDone}
+            }
+            return t
+        })
+        setTasks(updatedTasks)
+
+    }
+
     //const todoListFilter: FilterValuesType = "all";
 
     const [todoListFilter, setTodoListFilter] = useState<FilterValuesType>("all")
@@ -47,9 +59,9 @@ function App() {
     function getTasksForTodoList() {
         switch (todoListFilter) {
             case "active":
-                return tasks.filter(t => t.isDone === false)
+                return tasks.filter(t => !t.isDone)
             case "completed":
-                return tasks.filter(t => t.isDone === true)
+                return tasks.filter(t => t.isDone)
             default:
                 return tasks
         }
@@ -63,6 +75,8 @@ function App() {
                       changeTodoListFilter={changeTodoListFilter}
                       removeTask={removeTask}
                       addTask={addTask}
+                      filter={todoListFilter}
+                      changeTaskStatus={changeTaskStatus}
             />
 
         </div>
