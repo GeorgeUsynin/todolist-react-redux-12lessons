@@ -76,8 +76,13 @@ function App() {
 
     function changeTodoListFilter(newFilterValue: FilterValuesType, todoListID: string) {
         const updatedTodolists = todoLists.map(tl => tl.id === todoListID ? {...tl, filterValue: newFilterValue} : tl)
-
         setTodoLists(updatedTodolists)
+    }
+
+    const removeTodolist = (todoListID: string) => {
+        const updatedTodolists = todoLists.filter(tl => tl.id !== todoListID)
+        setTodoLists(updatedTodolists)
+        delete tasks[todoListID]
     }
 
     function getTasksForTodoList(todoList: TodoListType) : TodolistTaskType[] {
@@ -96,19 +101,18 @@ function App() {
             <Todolist title={tl.title}
                       key={tl.id}
                       id={tl.id}
-                      tasks={getTasksForTodoList(tl)}
-                      changeTodoListFilter={changeTodoListFilter}
-                      removeTask={removeTask}
-                      addTask={addTask}
                       filter={tl.filterValue}
+                      tasks={getTasksForTodoList(tl)}
+                      addTask={addTask}
+                      removeTask={removeTask}
                       changeTaskStatus={changeTaskStatus}
+                      changeTodoListFilter={changeTodoListFilter}
+                      removeTodolist={removeTodolist}
             />
         )
     })
 
     return (
-
-
         <div className="App">
             {mappedTodoLists}
         </div>
