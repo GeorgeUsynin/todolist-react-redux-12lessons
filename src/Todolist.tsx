@@ -4,11 +4,12 @@ import {FilterValuesType, TodolistTaskType} from "./App";
 type TodolistPropsType = {
     title: string
     tasks: Array<TodolistTaskType>
-    changeTodoListFilter: (newFilterValue: FilterValuesType) => void
-    removeTask: (taskID: string) => void
-    addTask: (title: string) => void
+    changeTodoListFilter: (newFilterValue: FilterValuesType, todoListID: string) => void
+    removeTask: (taskID: string, todoListID: string) => void
+    addTask: (title: string, todoListID: string) => void
     filter: FilterValuesType
-    changeTaskStatus: (taskID: string, newIsDone: boolean) => void
+    changeTaskStatus: (taskID: string, newIsDone: boolean, todoListID: string) => void
+    id: string
 };
 
 
@@ -18,24 +19,26 @@ export function Todolist(props: TodolistPropsType) {
     const [error, setError] = useState<string | null>(null)
 
     const tasks = props.tasks.map(t => {
-        const removeTask = () => props.removeTask(t.id)
-        const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(t.id, e.currentTarget.checked)
+        const removeTask = () => props.removeTask(t.id, props.id)
+        const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => props.changeTaskStatus(t.id, e.currentTarget.checked, props.id)
         return (
             <li key={t.id}>
                 <input
                     onChange={changeTaskStatus}
                     type="checkbox" checked={t.isDone}/>
-                <span>{t.title}</span>
+                <span className={t.isDone ? 'done_task' : ''}>{t.title}</span>
                 <button className="btn-remove" onClick={removeTask}>X</button>
             </li>
         );
     })
-    const setAllFilterValue = () => props.changeTodoListFilter("all")
+    const setAllFilterValue = () => {
+        props.changeTodoListFilter("all", props.id)
+    }
     const setActiveFilterValue = () => {
-        props.changeTodoListFilter("active")
+        props.changeTodoListFilter("active", props.id)
     }
     const setCompletedFilterValue = () => {
-        props.changeTodoListFilter("completed")
+        props.changeTodoListFilter("completed", props.id)
     }
     const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
         setError(null)
@@ -51,7 +54,7 @@ export function Todolist(props: TodolistPropsType) {
         const trimmedTitle = title.trim()
 
         if (trimmedTitle) {
-            props.addTask(trimmedTitle)
+            props.addTask(trimmedTitle, props.id)
         }else{
             setError('Title is required !')
         }
