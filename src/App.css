@@ -1,31 +1,31 @@
-.App {
-    padding: 30px;
-    display: flex;
-}
+/*.App {*/
+/*    padding: 30px;*/
+/*    display: flex;*/
+/*}*/
 
-.App > div {
-    margin-right: 50px;
-}
+/*.App > div {*/
+/*    margin-right: 50px;*/
+/*}*/
 
-.btn-remove {
-    background-color: whitesmoke;
-}
+/*.btn-remove {*/
+/*    background-color: whitesmoke;*/
+/*}*/
 
-.active_filter {
-    background-color: burlywood;
-    border-radius: 20px;
-    margin: 0 5px;
-    outline: none;
-}
+/*.active_filter {*/
+/*    background-color: burlywood;*/
+/*    border-radius: 20px;*/
+/*    margin: 0 5px;*/
+/*    outline: none;*/
+/*}*/
 
-.input_error{
-    border: solid red 1px;
-    outline: none;
-}
+/*.input_error{*/
+/*    border: solid red 1px;*/
+/*    outline: none;*/
+/*}*/
 
-.error{
-    color: red;
-}
+/*.error{*/
+/*    color: red;*/
+/*}*/
 .done_task{
     opacity: 0.5;
 }
