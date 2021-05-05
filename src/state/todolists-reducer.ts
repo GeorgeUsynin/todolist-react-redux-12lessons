@@ -30,7 +30,10 @@ type ActionsType =
     | ChangeTodoListFilterActionType
     | ChangeTodoListTitleActionType
 
-export const todoListsReducer = (todoLists: Array<TodoListType>, action: ActionsType): Array<TodoListType> => {
+const initialState: Array<TodoListType> = []
+
+
+export const todoListsReducer = (todoLists: Array<TodoListType> = initialState, action: ActionsType): Array<TodoListType> => {
     switch (action.type) {
         case "REMOVE_TODOLIST":
             return todoLists.filter(tl => tl.id !== action.todoListID)
