@@ -23,9 +23,9 @@ type TodolistPropsType = {
 
 export const Todolist = React.memo((props: TodolistPropsType) => {
 
-    const removeTask = useCallback((taskId: string) => props.removeTask(taskId, props.id),[])
-    const changeTaskStatus = useCallback((taskId: string, newIsDone: boolean) => props.changeTaskStatus(taskId, newIsDone, props.id),[])
-    const changeTaskTitle = useCallback((taskId: string, newTitle: string) => props.changeTaskTitle(taskId, newTitle, props.id),[])
+    const removeTask = useCallback((taskId: string) => props.removeTask(taskId, props.id), [props.removeTask, props.id])
+    const changeTaskStatus = useCallback((taskId: string, newIsDone: boolean) => props.changeTaskStatus(taskId, newIsDone, props.id), [props.changeTaskStatus, props.id])
+    const changeTaskTitle = useCallback((taskId: string, newTitle: string) => props.changeTaskTitle(taskId, newTitle, props.id), [props.changeTaskTitle, props.id])
 
     const tasks = getTasksForTodoList().map(t => {
         return <Task
