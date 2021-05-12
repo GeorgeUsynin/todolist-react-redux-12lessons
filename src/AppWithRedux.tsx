@@ -1,20 +1,18 @@
-import React, {Dispatch, useReducer, useState} from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
-import {v1} from "uuid";
 import {AddItemForm} from "./AddItemForm";
-import {AppBar, Button, IconButton, Typography, Toolbar, Container, Grid, Paper,} from "@material-ui/core";
+import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography,} from "@material-ui/core";
 import {Menu} from '@material-ui/icons';
 import {
     addTodoListAC,
     changeTodoListFilterAC,
     changeTodoListTitleAC,
-    removeTodoListAC,
-    todoListsReducer
+    removeTodoListAC
 } from "./state/todolists-reducer";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTasksAC, tasksReducer} from "./state/tasks-reducer";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTasksAC} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/redux-store";
+import {selectTasks, selectTodoLists} from "./state/selectors";
 
 export type TodolistTaskType = {
     id: string;
@@ -35,49 +33,51 @@ export type TasksStateType = {
 }
 
 
-
-
 function AppWithRedux() {
 
     //BLL:
 
-    let todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todoLists)
-    let tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+    // method 1 to use useSelector
+    // let todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todoLists)
+    // let tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+
+    // method 2 to use useSelector
+    const todoLists = useSelector(selectTodoLists)
+    const tasks = useSelector(selectTasks)
 
     const dispatch = useDispatch()
 
+    const removeTask = useCallback((taskID: string, todoListID: string)=> {
+        dispatch(removeTasksAC(taskID, todoListID))
+    },[dispatch])
 
-    function removeTask(taskID: string, todoListID: string) {
-        dispatch(removeTasksAC(taskID,todoListID))
-    }
+    const addTask = useCallback((title: string, todoListID: string)=> {
+        dispatch(addTaskAC(title, todoListID))
+    },[dispatch])
 
-    function addTask(title: string, todoListID: string) {
-        dispatch(addTaskAC(title,todoListID))
-    }
+    const changeTaskStatus = useCallback((taskID: string, newIsDone: boolean, todoListID: string)=> {
+        dispatch(changeTaskStatusAC(taskID, newIsDone, todoListID))
 
-    function changeTaskStatus(taskID: string, newIsDone: boolean, todoListID: string) {
-        dispatch(changeTaskStatusAC(taskID,newIsDone,todoListID))
+    },[dispatch])
 
-    }
+    const changeTaskTitle = useCallback((taskID: string, newTitle: string, todoListID: string)=> {
+        dispatch(changeTaskTitleAC(taskID, newTitle, todoListID))
 
-    function changeTaskTitle(taskID: string, newTitle: string, todoListID: string) {
-        dispatch(changeTaskTitleAC(taskID,newTitle,todoListID))
+    },[dispatch])
 
-    }
+    const changeTodListTile = useCallback((newTitle: string, todoListID: string)=> {
+        dispatch(changeTodoListTitleAC(newTitle, todoListID))
+    },[dispatch])
 
-    function changeTodListTile(newTitle: string, todoListID: string) {
-        dispatch(changeTodoListTitleAC(newTitle,todoListID))
-    }
+    const changeTodoListFilter = useCallback((newFilterValue: FilterValuesType, todoListID: string)=> {
+        dispatch(changeTodoListFilterAC(newFilterValue, todoListID))
+    },[dispatch])
 
-    function changeTodoListFilter(newFilterValue: FilterValuesType, todoListID: string) {
-        dispatch(changeTodoListFilterAC(newFilterValue,todoListID))
-    }
-
-    const removeTodolist = (todoListID: string) => {
+    const removeTodolist = useCallback((todoListID: string) => {
         dispatch(removeTodoListAC(todoListID))
-    }
+    },[dispatch])
 
-    function addTodoList(title: string) {
+    const addTodoList = useCallback((title: string) => {
 
         //так как мы диспатчим экшн в оба редюсера, чтобы наш экшн был с одинаковой todolistID
         //для обоих редюсеров, то мы сначала создадим экшн, а потом отдами его диспатчу
@@ -85,20 +85,10 @@ function AppWithRedux() {
         // dispatchToTasks(action)
 
         dispatch(addTodoListAC(title))
-    }
+    }, [dispatch])
 
-     //UI:
+    //UI:
 
-    function getTasksForTodoList(todoList: TodoListType): TodolistTaskType[] {
-        switch (todoList.filterValue) {
-            case "active":
-                return tasks[todoList.id].filter(t => !t.isDone)
-            case "completed":
-                return tasks[todoList.id].filter(t => t.isDone)
-            default:
-                return tasks[todoList.id]
-        }
-    }
 
     const mappedTodoLists = todoLists.map(tl => {
         return (
@@ -107,7 +97,7 @@ function AppWithRedux() {
                     <Todolist title={tl.title}
                               id={tl.id}
                               filter={tl.filterValue}
-                              tasks={getTasksForTodoList(tl)}
+                              tasks={tasks[tl.id]}
                               addTask={addTask}
                               removeTask={removeTask}
                               changeTaskStatus={changeTaskStatus}

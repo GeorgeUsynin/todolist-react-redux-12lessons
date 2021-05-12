@@ -6,19 +6,18 @@ type AddItemFormPropsType = {
     addItem: (title: string) => void // родительский callback
 }
 
-
-export function AddItemForm(props: AddItemFormPropsType) {
+export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
 
     const [title, setTitle] = useState<string>("")
 
     const [error, setError] = useState<string | null>(null)
 
     const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(null)
+        error && setError(null)
         setTitle(e.currentTarget.value)
     }
 
-    const errorMessage = error && <div className={'error'}>{error}</div>
+    //const errorMessage = error && <div className={'error'}>{error}</div>
 
     const addItem = () => {
 
@@ -61,4 +60,4 @@ export function AddItemForm(props: AddItemFormPropsType) {
             {/*{errorMessage}*/}
         </div>
     )
-}
+})
