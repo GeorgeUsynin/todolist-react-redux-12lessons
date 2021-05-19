@@ -28,12 +28,7 @@ export type TodoListType = {
     filterValue: FilterValuesType
 }
 
-export type TasksStateType = {
-    [key: string]: TodolistTaskType[]
-}
-
-
-function AppWithRedux() {
+export function AppWithRedux() {
 
     //BLL:
 
@@ -88,7 +83,6 @@ function AppWithRedux() {
     }, [dispatch])
 
     //UI:
-
 
     const mappedTodoLists = todoLists.map(tl => {
         return (
